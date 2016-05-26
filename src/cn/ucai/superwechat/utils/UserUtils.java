@@ -66,6 +66,8 @@ public class UserUtils {
         Contact contact = getUserBeanInfo(username);
         if (contact != null && contact.getMContactCname() != null) {
             setUserAvatar(getAvatarPath(username), imageView);
+        } else {
+            imageView.setDefaultImageResId(R.drawable.default_avatar);
         }
     }
 
