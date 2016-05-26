@@ -39,6 +39,7 @@ import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.data.MultipartRequest;
 import cn.ucai.superwechat.data.RequestManager;
+import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.EMUser;
 import cn.ucai.superwechat.listener.OnSetAvatarListener;
 import cn.ucai.superwechat.utils.ImageUtils;
@@ -239,9 +240,13 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 							dialog.dismiss();
 							Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatenick_success), Toast.LENGTH_SHORT)
 									.show();
+							//更新:1.testView 2.当前用户昵称 3.全局用户昵称 4.本应用UserDao
 							tvNickName.setText(nickName);
                             SuperWeChatApplication.currentUserNick = nickName;
-                            SuperWeChatApplication.getInstance().getUser().setMUserNick(nickName);
+							User user = SuperWeChatApplication.getInstance().getUser();
+							user.setMUserNick(nickName);
+							UserDao userDao = new UserDao(mContext);
+							userDao.updateUser(user);
 						}
 					});
 				}
