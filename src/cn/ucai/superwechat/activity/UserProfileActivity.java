@@ -59,7 +59,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private RelativeLayout rlNickName;
 	
 	Activity mContext;
-    OnSetAvatarListener mOnSetAvatarListener;
+    OnSetAvatarListener mOnSetAvatarListener;/**上传头像对象*/
     String avatarName;
 	
 	@Override
@@ -110,7 +110,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		switch (v.getId()) {
 		case R.id.user_head_avatar:
             mOnSetAvatarListener = new OnSetAvatarListener(mContext,R.id.layout_user_profile,
-                    getUserName(),I.AVATAR_TYPE_USER_PATH);
+					getAvatarUserName(),I.AVATAR_TYPE_USER_PATH);
 //			uploadHeadPhoto();
 			break;
 		case R.id.rl_nickname:
@@ -254,14 +254,16 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		}).start();
 	}
 
+	//获取裁剪后结果
 	@Override
 	protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
         Log.e("main","requestCode="+requestCode+",resultCode="+resultCode);
-        mOnSetAvatarListener.setAvatar(requestCode,data,headAvatar);
+		mOnSetAvatarListener.setAvatar(requestCode,data,headAvatar);
         if(resultCode==RESULT_OK && requestCode == OnSetAvatarListener.REQUEST_CROP_PHOTO){
-            dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
-            RequestManager.getRequestQueue().getCache()
+			dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
+			//清空缓存文件
+			RequestManager.getRequestQueue().getCache()
                     .remove(UserUtils.getAvatarPath(SuperWeChatApplication.getInstance().getUserName()));
             uploadAvatarByMultipart();
             dialog.show();
@@ -271,10 +273,12 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     private final String mimeType = "multipart/form-data;boundary=" + boundary;
     private byte[] multipartBody;
     private Bitmap bitmap;
+	//使用volley框架上传头像，MultipartRequest发送post请求
     private void uploadAvatarByMultipart(){
         File file = new File(ImageUtils.getAvatarPath(mContext,I.AVATAR_TYPE_USER_PATH),
                 avatarName + I.AVATAR_SUFFIX_JPG);
         String path = file.getAbsolutePath();
+		//通过文件转换成bitmap
         bitmap = BitmapFactory.decodeFile(path);
         multipartBody = getImageBytes(bitmap);
         String url = null;
@@ -290,7 +294,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                 uploadAvatarByMultipartListener(),errorListener(),mimeType, multipartBody));
     }
 
-    private Response.Listener<Message> uploadAvatarByMultipartListener() {
+    private Response.Listener<Message>  uploadAvatarByMultipartListener() {
         return new Response.Listener<Message>() {
             @Override
             public void onResponse(Message result) {
@@ -306,6 +310,8 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             }
         };
     }
+
+	//bitmap转换二进制
     public byte[] getImageBytes(Bitmap bmp){
         if(bmp==null)return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -377,7 +383,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 //		bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
 //		return baos.toByteArray();
 //	}
-    private String getUserName() {
+    private String getAvatarUserName() {
         avatarName = System.currentTimeMillis()+"";
         return avatarName;
     }
