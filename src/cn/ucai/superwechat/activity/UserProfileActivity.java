@@ -184,7 +184,8 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 				});
 		builder.create().show();
 	}
-	
+
+	//增加更新远端服务器昵称方法
 	private void updateUserNick(String nickName) {
         dialog = ProgressDialog.show(this, getString(R.string.dl_update_nick), getString(R.string.dl_waiting));
         try {
@@ -193,18 +194,18 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                 .with(I.User.NICK,nickName)
                 .getRequestUrl(I.REQUEST_UPDATE_USER_NICK);
             executeRequest(new GsonRequest<User>(path,User.class,
-                    responseUpdateUserNickListener(),errorListener()));
+                    responseUpdateUserNickListener(nickName),errorListener()));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Response.Listener<User> responseUpdateUserNickListener() {
+    private Response.Listener<User> responseUpdateUserNickListener(final String nickname) {
         return new Response.Listener<User>() {
             @Override
             public void onResponse(User user) {
                 if(user.isResult()){
-                    updateRemoteNick(user.getMUserNick());
+                    updateRemoteNick(nickname);
                 }else{
                     Utils.showToast(mContext,Utils.getResourceString(mContext,user.getMsg()),Toast.LENGTH_SHORT);
                     dialog.dismiss();
@@ -213,6 +214,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         };
     }
 
+	//更新环信服务器昵称
     private void updateRemoteNick(final String nickName) {
 		new Thread(new Runnable() {
 
