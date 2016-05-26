@@ -111,13 +111,14 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		    holder.nameTextview.setText(user.getMUserNick());
 		    holder.avatar.setDefaultImageResId(R.drawable.new_friends_icon);
 			holder.avatar.setImageUrl("", RequestManager.getImageLoader());
-            int unreadMsgCount = ((DemoHXSDKHelper) HXSDKHelper.getInstance())
+			//显示未读消息提示
+            int unreadMsgCount = ((DemoHXSDKHelper)HXSDKHelper.getInstance())
                     .getContactList().get(Constant.NEW_FRIENDS_USERNAME).getUnreadMsgCount();
-            if(user.getMUserUnreadMsgCount() > 0 || unreadMsgCount>0){
-			    holder.unreadMsgView.setVisibility(View.VISIBLE);
+            if(user.getMUserUnreadMsgCount() > 0 ||  unreadMsgCount>0){
+			    holder .unreadMsgView.setVisibility(View.VISIBLE);
 //			    holder.unreadMsgView.setText(user.getUnreadMsgCount()+"");
 			}else{
-			    holder.unreadMsgView.setVisibility(View.INVISIBLE);
+			    holder .unreadMsgView.setVisibility(View.INVISIBLE);
 			}
 		}else if(username.equals(Constant.GROUP_USERNAME)){
 			//群聊item
