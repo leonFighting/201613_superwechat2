@@ -22,7 +22,15 @@ public class Group extends Location implements java.io.Serializable {
 	private Integer mgroupAffiliationsCount;
 	private Boolean mgroupIsPublic;
 	private Boolean mgroupAllowInvites;
+	private String header;
 
+	public String getHeader() {
+		return header;
+	}
+
+	public void setHeader(String header) {
+		this.header = header;
+	}
 	// Constructors
 
 	/** default constructor */

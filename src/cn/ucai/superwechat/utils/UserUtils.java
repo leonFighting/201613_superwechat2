@@ -9,6 +9,8 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.util.HanziToPinyin;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.I;
@@ -16,6 +18,7 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.Contact;
+import cn.ucai.superwechat.bean.Group;
 import cn.ucai.superwechat.bean.User;
 import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.domain.EMUser;
@@ -79,7 +82,7 @@ public class UserUtils {
 
     //设置申请与通知头像
     public static void setUserBeanAvatarNF(String username, NetworkImageView imageView) {
-        if (username != null ) {
+        if (username != null) {
             setUserAvatar(getAvatarPath(username), imageView);
         }
     }
@@ -215,4 +218,46 @@ public class UserUtils {
         }
     }
 
+    public static void setGroupBeanAvatar(String groupId, NetworkImageView imageView) {
+        if (groupId != null && imageView != null) {
+            setGroupAvatar(getGroupAvatarPath(groupId), imageView);
+        }
+    }
+
+    private static void setGroupAvatar(String groupAvatarPath, NetworkImageView imageView) {
+        if (groupAvatarPath != null) {
+            imageView.setDefaultImageResId(R.drawable.group_icon);
+            imageView.setImageUrl(groupAvatarPath, RequestManager.getImageLoader());
+            imageView.setErrorImageResId(R.drawable.group_icon);
+        }
+    }
+
+    private static String getGroupAvatarPath(String groupId) {
+        if (groupId != null) {
+            return I.DOWNLOAD_GROUP_AVATAR_URL + groupId;
+        }
+        return null;
+    }
+
+    public static String getPinYinFromHanZi(String hanzi) {
+        String pinyin = "";
+
+        for (int i = 0; i < hanzi.length(); i++) {
+            String s = hanzi.substring(i, i + 1);
+            pinyin = pinyin + HanziToPinyin.getInstance().get(s).get(0).target.toLowerCase();
+        }
+        return pinyin;
+    }
+
+    public static Group getGroupBeanFromHXID(String hxid) {
+        if (hxid != null && !hxid.isEmpty()) {
+            ArrayList<Group> groupArrayList = SuperWeChatApplication.getInstance().getGroupList();
+            for (Group group : groupArrayList) {
+                if (group.getMGroupId().equals(hxid)) {
+                    return group;
+                }
+            }
+        }
+        return null;
+    }
 }
