@@ -329,7 +329,7 @@
     <string name="msg_103">上传头像失败</string>
     <string name="msg_104">上传头像成功</string>
     <string name="msg_105">注册失败</string>
-    <string name="msg_106">注册成功</string>
+    <string name="msg_106">取消注册成功</string>
     <string name="msg_107">注册失败</string>
     <string name="msg_201">已经是好友关系</string>
     <string name="msg_202">好友关系</string>
