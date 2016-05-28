@@ -16,6 +16,7 @@ package cn.ucai.superwechat.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -70,14 +71,15 @@ public class GroupPickContactsActivity extends BaseActivity {
 		// 获取好友列表
 		final ArrayList<Contact> alluserList = new ArrayList<Contact>();
 		for (Contact user : SuperWeChatApplication.getInstance().getUserList().values()) {
-			if (!user.getMContactCname().equals(Constant.NEW_FRIENDS_USERNAME) & !user.getMContactCname().equals(Constant.GROUP_USERNAME) & !user.getMContactCname().equals(Constant.CHAT_ROOM) & !user.getMContactCname().equals(Constant.CHAT_ROBOT))
+			if (!user.getMContactCname().equals(Constant.NEW_FRIENDS_USERNAME)
+					& !user.getMContactCname().equals(Constant.GROUP_USERNAME))
 				alluserList.add(user);
 		}
 		// 对list进行排序
 		Collections.sort(alluserList, new Comparator<Contact>() {
 			@Override
 			public int compare(Contact lhs, Contact rhs) {
-				return (lhs.getHeader().compareTo(rhs.getHeader()));
+				return (lhs.getMContactCname().compareTo(rhs.getMContactCname()));
 
 			}
 		});
@@ -103,30 +105,56 @@ public class GroupPickContactsActivity extends BaseActivity {
 	 * @param v
 	 */
 	public void save(View v) {
-		setResult(RESULT_OK, new Intent().putExtra("newmembers", getToBeAddMembers()));
+		String toBeAddMembersIds = getToBeAddMembersIds();
+		String toBeAddMembersNames = getToBeAddMembersNames();
+		Intent intent = new Intent("get_data_from_GroupPickContactActivity");
+		intent.putExtra("newmembersIds",toBeAddMembersIds);
+		intent.putExtra("newmembersNames",toBeAddMembersNames);
+		sendStickyBroadcast(intent);
+		setResult(RESULT_OK, new Intent());
 		finish();
 	}
 
 	/**
 	 * 获取要被添加的成员
-	 *
+	 * 
 	 * @return
 	 */
-	private Contact[] getToBeAddMembers() {
-		Contact[] contacts = new Contact[0];
+	private String getToBeAddMembersIds() {
+		Contact[] members = new Contact[0];
 		int length = contactAdapter.isCheckedArray.length;
-		//遍历整个被选择的联系人列表，选择将谁拉入群组列表
 		for (int i = 0; i < length; i++) {
 			Contact contact = contactAdapter.getItem(i);
 			if (contactAdapter.isCheckedArray[i] && !exitingMembers.contains(contact.getMContactCname())) {
-				Utils.add(contacts,contact);
+                members = Utils.add(members,contact);
 			}
 		}
-		if (contacts.length > 0) {
-			return contacts;
-		} else {
-			return null;
+		String userIds="";
+		for(int i=0;i<members.length;i++){
+			userIds+=members[i].getMContactCid()+",";
 		}
+        if(members.length>0){
+            return userIds;
+        }
+		return null;
+	}
+	private String getToBeAddMembersNames() {
+		Contact[] members = new Contact[0];
+		int length = contactAdapter.isCheckedArray.length;
+		for (int i = 0; i < length; i++) {
+			Contact contact = contactAdapter.getItem(i);
+			if (contactAdapter.isCheckedArray[i] && !exitingMembers.contains(contact.getMContactCname())) {
+                members = Utils.add(members,contact);
+			}
+		}
+		String userNames="";
+		for(int i=0;i<members.length;i++){
+			userNames+=members[i].getMContactCname()+",";
+		}
+        if(members.length>0){
+            return userNames;
+        }
+		return null;
 	}
 
 	/**
