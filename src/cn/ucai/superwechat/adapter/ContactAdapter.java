@@ -38,6 +38,7 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.Contact;
+import cn.ucai.superwechat.bean.User;
 import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.utils.UserUtils;
 
@@ -230,19 +231,21 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
                 for (int i = 0; i < count; i++) {
                     final Contact user = mOriginalList.get(i);
                     String username = user.getMContactCname();
-                    if (username.contains(prefixString) || user.getMUserNick().contains(prefixString)) {
+                    String nick = UserUtils.getPinYinFromHanZi(user.getMUserNick());
+                    //通过账号，昵称汉语和拼音查找用户
+                    if (username.contains(prefixString) || nick.contains(prefixString) || user.getMUserNick().contains(prefixString)) {
                         newValues.add(user);
-                    } else {
-                        final String[] words = username.split(" ");
-                        final int wordCount = words.length;
+//                    } else {
+//                        final String[] words = username.split(" ");
+//                        final int wordCount = words.length;
 
                         // Start at index 0, in case valueText starts with space(s)
-                        for (int k = 0; k < wordCount; k++) {
-                            if (words[k].startsWith(prefixString)) {
-                                newValues.add(user);
-                                break;
-                            }
-                        }
+//                        for (int k = 0; k < wordCount; k++) {
+//                            if (words[k].contains(prefixString)) {
+//                                newValues.add(user);
+//                                break;
+//                            }
+//                        }
                     }
                 }
                 results.values = newValues;
