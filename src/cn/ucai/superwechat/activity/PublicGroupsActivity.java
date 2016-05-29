@@ -106,9 +106,9 @@ public class PublicGroupsActivity extends BaseActivity {
                     if (listView.getCount() != 0) {
                         int lasPos = view.getLastVisiblePosition();
                         if (hasMoreData && !isLoading && lasPos == listView.getCount() - 1) {
-                            pageId += pagesize;
+                            pageId++;
                             User user = SuperWeChatApplication.getInstance().getUser();
-                            new DownloadPublicGroupTask(mContext, "", pageId, pagesize);
+                            new DownloadPublicGroupTask(mContext, user.getMUserName(), (pageId*pagesize), pagesize).execute();
                             loadAndShowData();
                         }
                     }
@@ -149,7 +149,7 @@ public class PublicGroupsActivity extends BaseActivity {
         try {
             isLoading = true;
             ArrayList<Group> publicGroupList = SuperWeChatApplication.getInstance().getPublicGroupList();
-            Log.e(TAG, "loadAndShowData,publicGroupList=" + publicGroupList.size() + ",groupsList=" + groupsList.size());
+            Log.e(TAG, "loadAndShowData,publicGroupList.size=" + publicGroupList.size() + ",groupsList.size=" + groupsList.size());
             for (Group g : publicGroupList) {
                 if (!groupsList.contains(g)) {
                     groupsList.add(g);
