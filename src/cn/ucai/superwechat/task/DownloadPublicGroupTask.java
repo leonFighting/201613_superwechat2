@@ -39,6 +39,7 @@ public class DownloadPublicGroupTask extends BaseActivity {
                     .with(I.PAGE_ID,pageId+"")
                     .with(I.PAGE_SIZE,pageSize+"")
                     .getRequestUrl(I.REQUEST_FIND_PUBLIC_GROUPS);
+            Log.e(TAG, "path=" + path);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,6 +61,7 @@ public class DownloadPublicGroupTask extends BaseActivity {
                     ArrayList<Group> publicGroupList =
                             SuperWeChatApplication.getInstance().getPublicGroupList();
                     for(Group g:list){
+                        //判断该群组在全局变量里是否存在，如果不存在则添加
                         if(!publicGroupList.contains(g)){
                             publicGroupList.add(g);
                         }
