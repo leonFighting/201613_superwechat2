@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.EMError;
 import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
@@ -21,19 +23,23 @@ public class PublicGroupsSeachActivity extends BaseActivity{
     private EditText idET;
     private TextView nameText;
     public static EMGroup searchedGroup;
+    NetworkImageView mivAvatar;
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_public_groups_search);
-        
+        intiView();
+        searchedGroup = null;
+    }
+
+    private void intiView() {
         containerLayout = (RelativeLayout) findViewById(R.id.rl_searched_group);
         idET = (EditText) findViewById(R.id.et_search_id);
         nameText = (TextView) findViewById(R.id.name);
-        
-        searchedGroup = null;
+        mivAvatar = (NetworkImageView) findViewById(R.id.avatar);
     }
-    
+
     /**
      * 搜索
      * @param v
