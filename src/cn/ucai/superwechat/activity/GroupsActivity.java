@@ -16,10 +16,12 @@ package cn.ucai.superwechat.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -94,11 +96,10 @@ public class GroupsActivity extends BaseActivity {
         setContentView(R.layout.fragment_groups);
 
         instance = this;
-        inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        grouplist = SuperWeChatApplication.getInstance().getGroupList();
         initView();
         initData();
         setListener();
+        inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
         if (!HXSDKHelper.getInstance().isGroupsSyncedWithServer()) {
             progressBar.setVisibility(View.VISIBLE);
@@ -174,6 +175,7 @@ public class GroupsActivity extends BaseActivity {
         groupListView.setAdapter(groupAdapter);
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void initView() {
         groupListView = (ListView) findViewById(R.id.list);
 

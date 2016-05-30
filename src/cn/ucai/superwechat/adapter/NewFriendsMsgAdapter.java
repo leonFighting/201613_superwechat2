@@ -67,10 +67,10 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		
+
 		String str1 = context.getResources().getString(R.string.Has_agreed_to_your_friend_request);
 		String str2 = context.getResources().getString(R.string.agree);
-		
+
 		String str3 = context.getResources().getString(R.string.Request_to_add_you_as_a_friend);
 		String str4 = context.getResources().getString(R.string.Apply_to_the_group_of);
 		String str5 = context.getResources().getString(R.string.Has_agreed_to);
@@ -83,7 +83,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 			} else{
 				holder.groupContainer.setVisibility(View.GONE);
 			}
-			
+
 			holder.reason.setText(msg.getReason());
 			holder.name.setText(msg.getFrom());
 			// holder.time.setText(DateUtils.getTimestampString(new
@@ -135,7 +135,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 
 	/**
 	 * 同意好友请求或者群申请
-	 * 
+	 *
 	 * @param button
 	 * @param msg
 	 */
