@@ -68,6 +68,8 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.Contact;
+import cn.ucai.superwechat.bean.Group;
+import cn.ucai.superwechat.bean.User;
 import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.db.EMUserDao;
@@ -868,7 +870,8 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 
 		@Override
 		public void onApplicationReceived(String groupId, String groupName, String applyer, String reason) {
-			
+			User user = SuperWeChatApplication.getInstance().getUser();
+
 			// 用户申请加入群聊
 			InviteMessage msg = new InviteMessage();
 			msg.setFrom(applyer);

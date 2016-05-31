@@ -185,6 +185,8 @@ public interface I {
 	String REQUEST_ADD_GROUP_MEMBER 				= 		"add_group_member";
 	/** 客户端发送的添加多个群成员请求 */
 	String REQUEST_ADD_GROUP_MEMBERS		 		= 		"add_group_members";
+	/** 客户端发送的添加群成员请求 */
+	String REQUEST_ADD_GROUP_MEMBER_BY_USERNAME		= 		"add_group_member_by_username";
 	/** 客户端发送的更新群名称请求 */
 	String REQUEST_UPDATE_GROUP_NAME 				= 		"update_group_name";
 	/** 客户端发送的下载多个群成员请求 */
@@ -211,6 +213,8 @@ public interface I {
 	String REQUEST_FIND_GROUP_BY_ID					= 		"find_group_by_group_id";
 	/** 客户端发送的根据群组环信id查找群组请求 */
 	String REQUEST_FIND_GROUP_BY_HXID 				= 		"find_group_by_group_hxid";
+	/** 客户端发送的根据群组环信id查找公开群组请求 */
+	String REQUEST_FIND_PUBLIC_GROUP_BY_HXID 		= 		"find_public_group_by_group_hxid";
     String DOWNLOAD_USER_AVATAR_URL                 =       SuperWeChatApplication.SERVER_ROOT
             +  "?" + KEY_REQUEST + "=" + REQUEST_DOWNLOAD_AVATAR + "&" + AVATAR_TYPE + "=";
     /** 客户端发送的根据根据群组环信id下载群组头像的请求 */

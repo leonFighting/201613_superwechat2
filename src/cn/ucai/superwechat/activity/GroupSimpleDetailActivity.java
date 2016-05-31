@@ -14,10 +14,8 @@
 
 package cn.ucai.superwechat.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -26,10 +24,8 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.NetworkImageView;
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMGroup;
-import com.easemob.chat.EMGroupInfo;
 import com.easemob.chat.EMGroupManager;
+import com.easemob.exceptions.EaseMobException;
 
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
@@ -38,30 +34,29 @@ import cn.ucai.superwechat.bean.Group;
 import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.utils.UserUtils;
-import cn.ucai.superwechat.utils.Utils;
-
-import com.easemob.exceptions.EaseMobException;
 
 public class GroupSimpleDetailActivity extends BaseActivity {
-	public static final String TAG = GroupSimpleDetailActivity.class.getName();
 	private Button btn_add_group;
 	private TextView tv_admin;
+	private NetworkImageView niv_avatar;
 	private TextView tv_name;
 	private TextView tv_introduction;
 	private Group group;
 	private String groupid;
 	private ProgressBar progressBar;
-	Activity mContext;
-	NetworkImageView mivAvatar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_simle_details);
-		mContext = this;
-		initView();
+        niv_avatar = (NetworkImageView) findViewById(R.id.avatar);
+		tv_name = (TextView) findViewById(R.id.name);
+		tv_admin = (TextView) findViewById(R.id.tv_admin);
+		btn_add_group = (Button) findViewById(R.id.btn_add_to_group);
+		tv_introduction = (TextView) findViewById(R.id.tv_introduction);
+		progressBar = (ProgressBar) findViewById(R.id.loading);
 
-		Group groupInfo = (Group) getIntent().getSerializableExtra("groupinfo");
-		Log.e(TAG, "groupInfo=" + groupInfo);
+        Group groupInfo = (Group) getIntent().getSerializableExtra("groupinfo");
 		String groupname = null;
 		if(groupInfo != null){
 		    groupname = groupInfo.getMGroupName();
@@ -81,72 +76,32 @@ public class GroupSimpleDetailActivity extends BaseActivity {
 		    showGroupDetail();
 		    return;
 		}
-//		new Thread(new Runnable() {
-//
-//			public void run() {
-//				//从服务器获取详情
-//				try {
-//					group = EMGroupManager.getInstance().getGroupFromServer(groupid);
-//					runOnUiThread(new Runnable() {
-//						public void run() {
-//							showGroupDetail();
-//						}
-//					});
-//				} catch (final EaseMobException e) {
-//					e.printStackTrace();
-//					final String st1 = getResources().getString(R.string.Failed_to_get_group_chat_information);
-//					runOnUiThread(new Runnable() {
-//						public void run() {
-//							progressBar.setVisibility(View.INVISIBLE);
-//							Toast.makeText(GroupSimpleDetailActivity.this, st1+e.getMessage(), Toast.LENGTH_LONG).show();
-//						}
-//					});
-//				}
-//
-//			}
-//		}).start();
-		try {
-			String path = new ApiParams()
-					.with(I.Group.HX_ID, groupid)
-					.getRequestUrl(I.REQUEST_FIND_GROUP_BY_HXID);
-			executeRequest(new GsonRequest<Group>(path,Group.class,
-					responseListener(),errorListener()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            String path = new ApiParams()
+                    .with(I.Group.HX_ID,groupid)
+                    .getRequestUrl(I.REQUEST_FIND_PUBLIC_GROUP_BY_HXID);
+            executeRequest(new GsonRequest<Group>(path,Group.class,
+                    responseFindGroupListener(),errorListener()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	private void initView() {
-		tv_name = (TextView) findViewById(R.id.name);
-		tv_admin = (TextView) findViewById(R.id.tv_admin);
-		btn_add_group = (Button) findViewById(R.id.btn_add_to_group);
-		tv_introduction = (TextView) findViewById(R.id.tv_introduction);
-		progressBar = (ProgressBar) findViewById(R.id.loading);
-		mivAvatar = (NetworkImageView) findViewById(R.id.avatar);
-	}
-
-	private Response.Listener<Group> responseListener() {
-		return new Response.Listener<Group>() {
-			@Override
-			public void onResponse(Group group) {
-				if (group != null) {
-					progressBar.setVisibility(View.INVISIBLE);
-					//获取详情成功，并且自己不在群中，才让加入群聊按钮可点击
-					if(!SuperWeChatApplication.getInstance().getGroupList().contains(group))
-						btn_add_group.setEnabled(true);
-					tv_name.setText(group.getMGroupName());
-					tv_admin.setText(group.getMGroupOwner());
-					tv_introduction.setText(group.getMGroupDescription());
-					UserUtils.setGroupBeanAvatar(group.getMGroupHxid(),mivAvatar);
-				} else {
-					progressBar.setVisibility(View.INVISIBLE);
-					final String st1 = getResources().getString(R.string.Failed_to_get_group_chat_information);
-					Utils.showToast(mContext,st1,Toast.LENGTH_LONG);
-				}
-			}
-		};
-	}
-
+    private Response.Listener<Group> responseFindGroupListener() {
+        return new Response.Listener<Group>() {
+            @Override
+            public void onResponse(Group g) {
+                if(g!=null){
+                    group = g;
+                    showGroupDetail();
+                }else{
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.group_not_existed), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        };
+    }
+	
 	//加入群聊
 	public void addToGroup(View view){
 		String st1 = getResources().getString(R.string.Is_sending_a_request);
@@ -196,10 +151,10 @@ public class GroupSimpleDetailActivity extends BaseActivity {
          //获取详情成功，并且自己不在群中，才让加入群聊按钮可点击
          if(!SuperWeChatApplication.getInstance().getGroupList().contains(group))
              btn_add_group.setEnabled(true);
+         UserUtils.setGroupBeanAvatar(groupid,niv_avatar);
          tv_name.setText(group.getMGroupName());
          tv_admin.setText(group.getMGroupOwner());
          tv_introduction.setText(group.getMGroupDescription());
-		 UserUtils.setGroupBeanAvatar(group.getMGroupHxid(),mivAvatar);
      }
 	
 	public void back(View view){
