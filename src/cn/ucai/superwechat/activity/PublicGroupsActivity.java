@@ -126,7 +126,7 @@ public class PublicGroupsActivity extends BaseActivity {
                         if(hasMoreData && !isLoading && lasPos == listView.getCount()-1){
                             pageId++;
                             new DownloadPublicGroupTask(PublicGroupsActivity.this,SuperWeChatApplication.getInstance().getUserName(),
-                                    pageId, pagesize).execute();
+                                    pageId*pagesize, pagesize).execute();
                             loadAndShowData();
                         }
                     }
